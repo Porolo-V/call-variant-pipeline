@@ -1,0 +1,15 @@
+# big data and results (root only, so tests/data is NOT ignored)
+/data/
+/results/
+/results_check/
+/results_test/
+/results_nf/
+run_check.log
+
+# nextflow service files
+work/
+.nextflow*
+
+# generated snpEff database
+snpeff_data/
+snpeff.config
