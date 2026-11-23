@@ -13,7 +13,7 @@ process CALL_VARIANTS {
     script:
     """
     bcftools mpileup -Ou -f ${ref} ${bam} \\
-      | bcftools call -mv --ploidy 1 -Oz -o ${meta.id}.raw.vcf.gz
+      | bcftools call -mv --ploidy ${meta.ploidy} -Oz -o ${meta.id}.raw.vcf.gz
     bcftools index ${meta.id}.raw.vcf.gz
     bcftools filter \\
       -i 'QUAL>${params.min_qual} && INFO/DP>${params.min_dp} && INFO/MQ>${params.min_mq}' \\

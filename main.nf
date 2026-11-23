@@ -14,7 +14,7 @@ workflow {
     reads_ch = channel.fromPath(params.samplesheet, checkIfExists: true)
         .splitCsv(header: true)
         .map { row ->
-            def meta = [ id: row.sample ]
+            def meta = [ id: row.sample, ploidy: row.ploidy.toInteger() ]
             tuple(meta, [ file(row.fastq_1, checkIfExists: true), file(row.fastq_2, checkIfExists: true) ])
         }
 
