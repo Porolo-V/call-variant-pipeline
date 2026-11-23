@@ -6,7 +6,17 @@ include { CALL_VARIANTS } from './modules/local/call_variants/main'
 include { ANNOTATE } from './modules/local/annotate/main'
 
 workflow {
-    reads_ch = channel.fromFilePairs(params.reads, checkIfExists: true)
+    if (!params.samplesheet) {
+        error "Please provide a samplesheet: --samplesheet <file.csv>"
+    }
+
+    // one CSV row -> [ meta, [fastq_1, fastq_2] ]
+    reads_ch = channel.fromPath(params.samplesheet, checkIfExists: true)
+        .splitCsv(header: true)
+        .map { row ->
+            def meta = [ id: row.sample ]
+            tuple(meta, [ file(row.fastq_1, checkIfExists: true), file(row.fastq_2, checkIfExists: true) ])
+        }
 
     // single files shared by ALL samples -> value channels (.first())
     ref_ch = channel.fromPath(params.ref, checkIfExists: true).first()
